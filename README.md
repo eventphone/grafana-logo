@@ -25,6 +25,8 @@ grafana-cli plugins install grafana-simple-json-datasource
 * Url: http://localhost:5000
 * Access: proxy
 
+![grafana datasource](https://github.com/eventphone/grafana-logo/raw/master/doc/datasource.png)
+
 #### upload your logo image
 ```sh
 cd src/grafana-logo/wwwroot/images
@@ -34,13 +36,21 @@ wget https://github.com/eventphone/grafana-logo/raw/master/src/wwwroot/images/ev
 #### create a new graph
 * Datasource: your meaningful name
 * Metric: timeseries - filename of your logo
+
+![Metrics](https://github.com/eventphone/grafana-logo/raw/master/doc/metrics.png)
+
 * switch off legends: Legend -> Show
 * enable stack: Display -> Stack
 * remove lines: Display -> Line Width -> 0)
 * add color: Display -> Fill -> 10
+
+![Display](https://github.com/eventphone/grafana-logo/raw/master/doc/display.png)
+
 * add overrides:
   * Display -> Series override
   * add an override for each color
     * alias or regex: select color code
     * \+ color: set the color code from the name
   * set Lines=false for the background color
+
+![Overrides](https://github.com/eventphone/grafana-logo/raw/master/doc/overrides.png)

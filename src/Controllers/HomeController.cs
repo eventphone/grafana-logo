@@ -122,7 +122,7 @@ namespace eventphone.grafanalogo.Controllers
             {
                 var name = Path.GetFileNameWithoutExtension(file.Name);
                 yield return new Variable(name, name);
-                name += ".scroll";
+                name += "-scroll";
                 yield return new Variable(name, name);
             }
         }
@@ -155,7 +155,7 @@ namespace eventphone.grafanalogo.Controllers
             {
                 var scroll = false;
                 var name = target.Target;
-                if (name.EndsWith(".scroll"))
+                if (name.EndsWith("-scroll"))
                 {
                     name = name.Substring(0, name.Length - 7);
                     scroll = true;

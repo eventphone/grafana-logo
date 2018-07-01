@@ -106,6 +106,13 @@ namespace eventphone.grafanalogo.Controllers
             return StatusCode(200);
         }
 
+        [HttpGet("metrics/find")]
+        public IEnumerable<TreeJsonEntry> Find(string query)
+        {
+            return Search(new SearchRequest { Target = query })
+                .Select(x => new TreeJsonEntry { IsLeaf = true, Name = x.Name, Path = x.Key });
+        }
+        
         [HttpPost]
         public IEnumerable<Variable> Search([FromBody]SearchRequest request)
         {
@@ -118,6 +125,23 @@ namespace eventphone.grafanalogo.Controllers
                 name += ".scroll";
                 yield return new Variable(name, name);
             }
+        }
+
+        [HttpGet("render")]
+        [HttpPost("render")]
+        public IEnumerable<QueryResponse> Render(string[] target, string from, string until)
+        {
+            var fromdate = DateParser.Parse(from);
+            var todate = DateParser.Parse(until);
+            return Query(new QueryRequest
+            {
+                Targets = target.Select(x => new QueryTarget { Target = x, Type = "timeserie" }).ToArray(),
+                Range = new QueryRange { From = fromdate, To = todate }
+            }).Select(x => new QueryResponse
+            {
+                Target = x.Target,
+                Datapoints = x.Datapoints.Select(d => new Tuple<double, long>(d.Item1, d.Item2 / 1000))
+            });
         }
 
         [HttpPost]

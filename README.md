@@ -1,5 +1,5 @@
 ## What?
-This is a small webservice implementing a Grafana SimpleJson Endpoint to render logos on your dashboards. This project was inspired by [Monitoring Art](https://github.com/monitoringartist/grafana-monitoring-art).
+This is a small webservice implementing a graphite and grafana SimpleJson endpoint to render logos on your dashboards. This project was inspired by [Monitoring Art](https://github.com/monitoringartist/grafana-monitoring-art).
 
 ## Why?
 Because it's possible.

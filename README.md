@@ -5,7 +5,9 @@ This is a small webservice implementing a Grafana SimpleJson Endpoint to render 
 Because it's possible.
 
 ## Can I take a look?
-Checkout the dashboards from [#eh18](https://youtu.be/5eguMOTkq_8).
+
+![simplejson-logo](https://github.com/eventphone/grafana-logo/raw/master/doc/sj-logo.png)
+Also checkout the dashboards from [#eh18](https://youtu.be/5eguMOTkq_8).
 
 ## How
 
@@ -16,6 +18,10 @@ $ cd src/grafana-logo
 $ dotnet run
 ```
 #### install [SimpleJson Plugin](https://grafana.com/plugins/grafana-simple-json-datasource/installation)
+SimpleJson supports millisecond resolution. With graphite the logo may be pixelated.
+
+![simplejson-logo](https://github.com/eventphone/grafana-logo/raw/master/doc/graphite-logo.png)
+
 ``` sh
 grafana-cli plugins install grafana-simple-json-datasource
 ```
@@ -24,6 +30,8 @@ grafana-cli plugins install grafana-simple-json-datasource
 * Type: SimpleJson
 * Url: http://localhost:5000
 * Access: proxy
+
+The latest version also supports Graphite as type, but the logo may have a lower resolution for short time ranges (e.g. 5 minutes)
 
 ![grafana datasource](https://github.com/eventphone/grafana-logo/raw/master/doc/datasource.png)
 

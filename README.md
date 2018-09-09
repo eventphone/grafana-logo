@@ -14,7 +14,7 @@ Also checkout the dashboards from [#eh18](https://youtu.be/5eguMOTkq_8).
 ## How
 
 #### run from release
-- download [latest release](https://github.com/eventphone/ommstats/releases/latest)
+- download [latest release](https://github.com/eventphone/grafana-logo/releases/latest)
 - install [aspnetcore runtime](https://www.microsoft.com/net/download)
 - unzip
 - `dotnet grafana-logo.dll`

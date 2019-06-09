@@ -9,7 +9,8 @@ namespace eventphone.grafanalogo
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore()
+            services.AddResponseCompression()
+                .AddMvcCore()
                 .AddFormatterMappings()
                 .AddCors()
                 .AddJsonFormatters();
@@ -21,14 +22,15 @@ namespace eventphone.grafanalogo
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader())
+                .UseResponseCompression()
                 .UseMvc(routes =>
                 {
                     routes.MapRoute(
                         name: "default",
                         template: "{action=Index}",
-                        defaults: new { controller = "Home" });
+                        defaults: new {controller = "Home"});
                 });
         }
     }

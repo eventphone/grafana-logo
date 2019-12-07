@@ -24,10 +24,6 @@ namespace eventphone.grafanalogo.Model
         internal void AddValue(int x, int y, string color)
         {
             var skip = -1;
-            if (y == 1)
-            {
-
-            }
             for (int i = 0; i < Series.Count; i++)
             {
                 if (Series[i].ContainsKey(x))
@@ -53,10 +49,52 @@ namespace eventphone.grafanalogo.Model
                 }
                 return;
             }
+            //can we move up an existing color?
+            for (int i = 0; i < Series.Count; i++)
+            {
+                var existing = Series[i];
+                if (existing.Name == color)
+                {
+                    if (!existing.ContainsKey(x) || existing.Datapoints[x] == 0)
+                    {
+                        //found color without current value - now check if all previous values until skip are zero
+                        bool canbeMoved = true;
+                        for (int j = i+1; j <= skip; j++)
+                        {
+                            foreach (var previousKey in existing.Datapoints.Keys)
+                            {
+                                if (previousKey == x) continue;
+                                if (Series[j].ContainsKey(previousKey) && Series[j].Datapoints[previousKey] != 0)
+                                {
+                                    canbeMoved = false;
+                                    break;
+                                }
+                            }
+                            if (!canbeMoved)
+                                break;
+                        }
+                        if (canbeMoved)
+                        {
+                            //move an exit
+                            Series.Remove(existing);
+                            Series.Insert(skip, existing);
+                            existing.Datapoints[x] = y;
+                            for (int j = Series.Count - 1; j > skip + 1; j--)
+                            {
+                                if (Series[j].Datapoints[x] == 0)
+                                    Series[j].Datapoints.Remove(x, out _);
+                                else
+                                    break;
+                            }
+                            return;
+                        }
+                    }
+                }
+            }
             var newSeries = new LogoSeries { Name = color };
             newSeries.AddValue(x, y);
-            Series.Insert(skip+1, newSeries);
-            for (int i = Series.Count-1; i > skip+1; i--)
+            Series.Insert(skip + 1, newSeries);
+            for (int i = Series.Count - 1; i > skip + 1; i--)
             {
                 if (Series[i].Datapoints[x] == 0)
                     Series[i].Datapoints.Remove(x, out _);

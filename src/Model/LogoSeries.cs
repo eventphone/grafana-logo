@@ -15,8 +15,8 @@ namespace eventphone.grafanalogo.Model
 
         public string Name { get; set; }
 
-        private IList<Tuple<int, int>> _values = new Tuple<int,int>[0];
-        public ICollection<Tuple<int, int>> Values
+        private IList<(int, int)> _values = new (int,int)[0];
+        public ICollection<(int, int)> Values
         {
             get
             {
@@ -73,16 +73,7 @@ namespace eventphone.grafanalogo.Model
                         }
                         else
                         {
-                            var deltaLeft = (double)(second.Value - first.Value) / (second.Key - first.Key);
-                            var deltaTotal = (double)(current.Value - first.Value) / (current.Key - first.Key);
-                            if (Math.Abs(deltaLeft - deltaTotal) <= Double.Epsilon)
-                            {
-                                _datapoints.Remove(second.Key);
-                            }
-                            else
-                            {
-                                first = second;
-                            }
+                            first = second;
                         }
                         second = current;
                     }
@@ -91,21 +82,25 @@ namespace eventphone.grafanalogo.Model
             _values = CleanValues(CalculateValues()).ToArray();
         }
 
-        private IEnumerable<Tuple<int, int>> CalculateValues()
+        private IEnumerable<(int, int)> CalculateValues()
         {
             var previous = 0;
             var previousKey = -1;
-            foreach (var x in _datapoints)
+            foreach (var x in _datapoints.OrderBy(d=>d.Key))
             {
                 if ((x.Key - previousKey) == 1 || previous == 0)
-                    yield return new Tuple<int, int>(x.Key, previous);
-                yield return new Tuple<int, int>(x.Key, x.Value);
+                    yield return (x.Key, previous);
+                yield return (x.Key, x.Value);
                 previous = x.Value;
                 previousKey = x.Key;
             }
         }
 
-        private static IEnumerable<Tuple<int, int>> CleanValues(IEnumerable<Tuple<int, int>> source)
+        internal IDictionary<int, int> Datapoints => _datapoints;
+
+        public bool IsEmpty => _datapoints.Count == 0;
+
+        private static IEnumerable<(int, int)> CleanValues(IEnumerable<(int, int)> source)
         {
             using (var enumerator = source.GetEnumerator())
             {

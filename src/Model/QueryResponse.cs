@@ -10,16 +10,16 @@ namespace eventphone.grafanalogo.Model
         public string Target { get; set; }
 
         [JsonIgnore]
-        public IEnumerable<Tuple<double,long>> Datapoints { get; set; }
+        public IEnumerable<(double,long)> Datapoints { get; set; }
 
         [JsonProperty("datapoints")]
         public IEnumerable<object[]> JsonDatapoints
         {
             get
             {
-                foreach (var datapoint in Datapoints)
+                foreach (var (value, time) in Datapoints)
                 {
-                    yield return new object[] {datapoint.Item1, datapoint.Item2};
+                    yield return new object[] {value, time};
                 }
             }
         }

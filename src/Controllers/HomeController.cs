@@ -58,7 +58,7 @@ namespace eventphone.grafanalogo.Controllers
                             previousValue = y;
                         }
                     }
-                    logo.FinishColumn(x, 0);
+                    logo.FinishColumn(x);
                 }
                 logo.Finish();
                 return logo;
@@ -140,7 +140,7 @@ namespace eventphone.grafanalogo.Controllers
             }).Select(x => new QueryResponse
             {
                 Target = x.Target,
-                Datapoints = x.Datapoints.Select(d => new Tuple<double, long>(d.Item1, d.Item2 / 1000))
+                Datapoints = x.Datapoints.Select(d => (d.Item1, d.Item2 / 1000))
             });
         }
 
@@ -155,7 +155,7 @@ namespace eventphone.grafanalogo.Controllers
             {
                 var scroll = false;
                 var name = target.Target;
-                if (name.EndsWith("-scroll"))
+                if (name != null && name.EndsWith("-scroll"))
                 {
                     name = name.Substring(0, name.Length - 7);
                     scroll = true;
@@ -164,7 +164,7 @@ namespace eventphone.grafanalogo.Controllers
                 if (files.Length < 1)
                     continue;
                 var file = Path.GetFileName(files[0].Name);
-                var logo = _logos.AddOrUpdate(file, x => LoadImage(x), (k, l) => UpdateImage(k, l));
+                var logo = _logos.AddOrUpdate(file, LoadImage, UpdateImage);
                 foreach (var series in logo.Series)
                 {
                     var step = range / logo.Datapoints;
@@ -181,14 +181,14 @@ namespace eventphone.grafanalogo.Controllers
                         yield return new QueryResponse
                         {
                             Target = series.Name,
-                            Datapoints = series.Values.Select(x => new Tuple<double, long>(x.Item2, (x.Item1 * step) + start))
+                            Datapoints = series.Values.Select(x => ((double)x.Item2, (x.Item1 * step) + start))
                         };
                     }
                 }
             }
         }
 
-        private static IEnumerable<Tuple<double, long>> GetScrollDatapoints(ICollection<Tuple<int, int>> values, long start, long step, long range)
+        private static IEnumerable<(double, long)> GetScrollDatapoints(ICollection<(int, int)> values, long start, long step, long range)
         {
             step /= 2;
             var logoRange = range / 2;
@@ -205,27 +205,27 @@ namespace eventphone.grafanalogo.Controllers
                 }
                 if (lastValue >= 0)
                 {
-                    yield return new Tuple<double, long>(lastValue, start);
+                    yield return (lastValue, start);
                     lastValue = -1;
                 }
-                yield return new Tuple<double, long>(value.Item2, time);
+                yield return (value.Item2, time);
             }
             var secondStart = (start - delta) + logoRange;
-            foreach (var value in values)
+            foreach (var (time,value) in values)
             {
-                yield return new Tuple<double, long>(value.Item2, (value.Item1 * step) + secondStart);
+                yield return (value, (time * step) + secondStart);
             }
             var thirdStart = (start - delta) + range;
             var end = start + range;
-            foreach (var value in values)
+            foreach (var (x,value) in values)
             {
-                var time = (value.Item1 * step) + thirdStart;
+                var time = (x * step) + thirdStart;
                 if (time > end)
                 {
-                    yield return new Tuple<double, long>(value.Item2, end);
+                    yield return (value, end);
                     yield break;
                 }
-                yield return new Tuple<double, long>(value.Item2, time);
+                yield return (value, time);
             }
         }
     }

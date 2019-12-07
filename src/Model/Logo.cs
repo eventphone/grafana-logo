@@ -55,17 +55,24 @@ namespace eventphone.grafanalogo.Model
             }
             var newSeries = new LogoSeries { Name = color };
             newSeries.AddValue(x, y);
-            Series.Add(newSeries);
+            Series.Insert(skip+1, newSeries);
+            for (int i = Series.Count-1; i > skip+1; i--)
+            {
+                if (Series[i].Datapoints[x] == 0)
+                    Series[i].Datapoints.Remove(x, out _);
+                else
+                    break;
+            }
         }
 
-        internal void FinishColumn(int x, int y)
+        internal void FinishColumn(int x)
         {
             for (int i = Series.Count - 1; i >= 0; i--)
             {
                 var series = Series[i];
                 if (series.ContainsKey(x))
                     return;
-                series.AddValue(x, y);
+                series.AddValue(x, 0);
             }
         }
 

@@ -47,8 +47,8 @@ namespace eventphone.grafanalogo.Controllers
                 for (int x = 0; x < image.Width; x++)
                 {
                     var previousColor = image[x, image.Height - 1];
-                    var previousValue = image.Height;
-                    for (int y = image.Height - 2; y >= 0; y--)
+                    var previousValue = image.Height-1;
+                    for (int y = image.Height - 1; y >= 0; y--)
                     {
                         var color = image[x, y];
                         if (!IsSimilar(previousColor, color))

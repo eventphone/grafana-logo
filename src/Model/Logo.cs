@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace eventphone.grafanalogo.Model
 {
@@ -105,6 +106,8 @@ namespace eventphone.grafanalogo.Model
 
         internal void FinishColumn(int x)
         {
+            if (x > 0)
+                AdjustNeighbors(x-1, x);
             for (int i = Series.Count - 1; i >= 0; i--)
             {
                 var series = Series[i];
@@ -114,8 +117,71 @@ namespace eventphone.grafanalogo.Model
             }
         }
 
+        private void AdjustNeighbors(int previous, int current)
+        {
+            var left = new Stack<int>();
+            var right = new Stack<int>();
+            foreach (var series in Series)
+            {
+                left.Push(series.GetValue(previous));
+                right.Push(series.GetValue(current));
+            }
+            for (int i = Series.Count - 1; i >= 0; i--)
+            {
+                var series = Series[i];
+                var lValue = left.Pop();
+                var rValue = right.Pop();
+                if (left.Count != right.Count)
+                    throw new InvalidOperationException();
+                if (lValue > 0 && rValue == 0)
+                {
+                    if (left.Sum() <= right.Sum())
+                    {
+                        int j;
+                        bool swapped = false;
+                        for (j = i-1; j >= 0; j--)
+                        {
+                            var lowerSeries = Series[j];
+                            if (lowerSeries.Name == series.Name)
+                            {
+                                if (!lowerSeries.ContainsKey(current) || lowerSeries.Datapoints[current] == 0)
+                                {
+                                    right.Pop();
+                                    continue;
+                                }
+                                var value = lowerSeries.Datapoints[current];
+                                series.Datapoints[current] = value;
+                                right.Pop();
+                                right.Push(0);
+                                lowerSeries.Datapoints[current] = 0;
+                                swapped = true;
+                                break;
+                            }
+                            if (lowerSeries.ContainsKey(current) && lowerSeries.Datapoints[current] != 0)
+                                break;
+                            right.Pop();
+                        }
+                        for (j++; j < i; j++)
+                        {
+                            right.Push(0);
+                            if (swapped)
+                                Series[j].AddValue(current, 0);
+                        }
+                    }
+                }
+            }
+        }
+
         internal void Finish()
         {
+            var keys = Series[0].Datapoints.Keys.Reverse().ToList();
+            var previous = keys[0];
+            for (int i = 1; i < keys.Count; i++)
+            {
+                var current = keys[i];
+                AdjustNeighbors(previous, current);
+                previous = current;
+            }
             foreach (var series in Series)
             {
                 series.CleanDuplicates();

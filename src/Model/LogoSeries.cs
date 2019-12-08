@@ -6,7 +6,7 @@ namespace eventphone.grafanalogo.Model
 {
     public class LogoSeries
     {
-        private readonly Dictionary<int,int> _datapoints;
+        private Dictionary<int,int> _datapoints;
 
         public LogoSeries()
         {
@@ -48,6 +48,13 @@ namespace eventphone.grafanalogo.Model
             return _datapoints.ContainsKey(x);
         }
 
+        public int GetValue(int x)
+        {
+            if (_datapoints.TryGetValue(x, out var value))
+                return value;
+            return 0;
+        }
+
         public void CleanDuplicates()
         {
             if (_datapoints.Count >= 3)
@@ -80,6 +87,7 @@ namespace eventphone.grafanalogo.Model
                 }
             }
             _values = CleanValues(CalculateValues()).ToArray();
+            _datapoints = new Dictionary<int, int>();
         }
 
         private IEnumerable<(int, int)> CalculateValues()

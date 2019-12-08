@@ -107,6 +107,7 @@ namespace eventphone.grafanalogo.Controllers
         }
 
         [HttpGet("metrics/find")]
+        [HttpPost("metrics/find")]
         public IEnumerable<TreeJsonEntry> Find(string query)
         {
             return Search(new SearchRequest { Target = query })

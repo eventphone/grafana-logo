@@ -106,8 +106,6 @@ namespace eventphone.grafanalogo.Model
 
         internal IDictionary<int, int> Datapoints => _datapoints;
 
-        public bool IsEmpty => _datapoints.Count == 0;
-
         private static IEnumerable<(int, int)> CleanValues(IEnumerable<(int, int)> source)
         {
             using (var enumerator = source.GetEnumerator())

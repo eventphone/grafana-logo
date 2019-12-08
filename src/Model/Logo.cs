@@ -76,7 +76,7 @@ namespace eventphone.grafanalogo.Model
                         }
                         if (canbeMoved)
                         {
-                            //move an exit
+                            //move and exit
                             Series.Remove(existing);
                             Series.Insert(skip, existing);
                             existing.Datapoints[x] = y;
@@ -135,31 +135,38 @@ namespace eventphone.grafanalogo.Model
                     throw new InvalidOperationException();
                 if (lValue > 0 && rValue == 0)
                 {
-                    if (left.Sum() <= right.Sum())
+                    var lsum = left.Sum();
+                    var rsum = right.Sum();
+                    if (lsum <= rsum)
                     {
                         int j;
                         bool swapped = false;
                         for (j = i-1; j >= 0; j--)
                         {
                             var lowerSeries = Series[j];
+                            var value = right.Pop();
                             if (lowerSeries.Name == series.Name)
                             {
-                                if (!lowerSeries.ContainsKey(current) || lowerSeries.Datapoints[current] == 0)
+                                if (value == 0)
                                 {
-                                    right.Pop();
                                     continue;
                                 }
-                                var value = lowerSeries.Datapoints[current];
+                                if ((lsum + lValue) < right.Sum())
+                                {
+                                    right.Push(value);
+                                    break;
+                                }
                                 series.Datapoints[current] = value;
-                                right.Pop();
                                 right.Push(0);
                                 lowerSeries.Datapoints[current] = 0;
                                 swapped = true;
                                 break;
                             }
-                            if (lowerSeries.ContainsKey(current) && lowerSeries.Datapoints[current] != 0)
+                            if (value != 0)
+                            {
+                                right.Push(value);
                                 break;
-                            right.Pop();
+                            }
                         }
                         for (j++; j < i; j++)
                         {

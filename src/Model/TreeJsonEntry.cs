@@ -1,28 +1,28 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace eventphone.grafanalogo.Model
 {
     public class TreeJsonEntry
     {
-        [JsonProperty("leaf")]
+        [JsonPropertyName("leaf")]
         public int Leaf { get { return IsLeaf ? 1 : 0; } }
 
-        [JsonProperty("allowChildren")]
+        [JsonPropertyName("allowChildren")]
         public int AllowChildren { get { return IsLeaf ? 0 : 1; } }
 
-        [JsonProperty("expandable")]
+        [JsonPropertyName("expandable")]
         public int Expandable { get { return IsLeaf ? 0 : 1; } }
 
         [JsonIgnore]
         public bool IsLeaf { get; set; }
 
-        [JsonProperty("text")]
+        [JsonPropertyName("text")]
         public string Name { get; set; }
 
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Path { get; set; }
 
-        [JsonProperty("context")]
+        [JsonPropertyName("context")]
         public object Context { get { return new object(); } }
     }
 }

@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace eventphone.grafanalogo.Model
 {
@@ -14,10 +14,10 @@ namespace eventphone.grafanalogo.Model
         {
         }
 
-        [JsonProperty("value")]
+        [JsonPropertyName("value")]
         public string Key { get; set; }
 
-        [JsonProperty("text")]
+        [JsonPropertyName("text")]
         public string Name { get; set; }
     }
 }

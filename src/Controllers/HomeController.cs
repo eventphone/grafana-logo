@@ -39,7 +39,7 @@ namespace eventphone.grafanalogo.Controllers
 
         public static Logo LoadImageFromFile(string imagePath)
         {
-            using (var image = Image.Load(imagePath))
+            using (var image = Image.Load<Rgba32>(imagePath))
             {
                 var fileInfo = new FileInfo(imagePath);
                 var logo = new Logo(Path.GetFileNameWithoutExtension(imagePath), image.Width, fileInfo.LastWriteTime);

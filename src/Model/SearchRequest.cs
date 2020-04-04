@@ -1,10 +1,10 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace eventphone.grafanalogo.Model
 {
     public class SearchRequest
     {
-        [JsonProperty("target")]
+        [JsonPropertyName("target")]
         public string Target { get; set; }
     }
 }

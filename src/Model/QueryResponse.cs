@@ -1,18 +1,18 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace eventphone.grafanalogo.Model
 {
     public class QueryResponse
     {
-        [JsonProperty("target")]
+        [JsonPropertyName("target")]
         public string Target { get; set; }
 
         [JsonIgnore]
         public IEnumerable<(double,long)> Datapoints { get; set; }
 
-        [JsonProperty("datapoints")]
+        [JsonPropertyName("datapoints")]
         public IEnumerable<object[]> JsonDatapoints
         {
             get

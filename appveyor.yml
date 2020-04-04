@@ -4,7 +4,7 @@ pull_requests:
 branches:
   only:
   - master
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
 dotnet_csproj:
@@ -18,4 +18,4 @@ dotnet_csproj:
 build_script:
 - cmd: dotnet publish -c %CONFIGURATION%
 artifacts:
-- path: src\bin\$(configuration)\netcoreapp2.1\publish
+- path: src\bin\$(configuration)\netcoreapp3.1\publish

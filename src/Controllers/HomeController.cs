@@ -189,6 +189,18 @@ namespace eventphone.grafanalogo.Controllers
             }
         }
 
+        [HttpGet("tags")]
+        public IActionResult Tags()
+        {
+            return new JsonResult(Array.Empty<int>());
+        }
+
+        [HttpGet("tags/autoComplete/tags")]
+        public IActionResult TagsAutoComplete()
+        {
+            return new JsonResult(Array.Empty<int>());
+        }
+
         private static IEnumerable<(double, long)> GetScrollDatapoints(ICollection<(int, int)> values, long start, long step, long range)
         {
             step /= 2;

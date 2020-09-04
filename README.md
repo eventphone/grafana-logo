@@ -1,7 +1,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/gel79fj1ivr569l7/branch/master?svg=true)](https://ci.appveyor.com/project/eventphone/grafana-logo/branch/master)
 
 ## What?
-This is a small webservice implementing a graphite and grafana SimpleJson endpoint to render logos on your dashboards. This project was inspired by [Monitoring Art](https://github.com/monitoringartist/grafana-monitoring-art).
+This is a small webservice implementing a [SimpleJson](https://grafana.com/grafana/plugins/grafana-simple-json-datasource) and a graphite compatible endpoint to render logos via metrics on your dashboards. This project was inspired by [Monitoring Art](https://github.com/monitoringartist/grafana-monitoring-art).
 
 ## Why?
 Because it's possible.
@@ -26,7 +26,7 @@ $ cd src/grafana-logo
 $ dotnet run
 ```
 #### install [SimpleJson Plugin](https://grafana.com/plugins/grafana-simple-json-datasource/installation)
-SimpleJson supports millisecond resolution. With graphite the logo may be pixelated.
+SimpleJson supports millisecond resolution. With graphite the logo may be pixelated for short time ranges under 10 minutes.
 
 ![simplejson-logo](doc/graphite-logo.png)
 
@@ -39,11 +39,9 @@ grafana-cli plugins install grafana-simple-json-datasource
 * Url: http://localhost:5000
 * Access: proxy
 
-The latest version also supports Graphite as type, but the logo may have a lower resolution for short time ranges (e.g. 5 minutes)
-
 ![grafana datasource](doc/datasource.png)
 
-#### upload your logo image
+#### upload your image
 ```sh
 cd src/grafana-logo/wwwroot/images
 wget https://github.com/eventphone/grafana-logo/raw/master/src/wwwroot/images/eventphone_logo_schriftzug.png

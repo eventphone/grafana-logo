@@ -191,7 +191,7 @@ namespace eventphone.grafanalogo.Model
             }
             foreach (var series in Series)
             {
-                series.CleanDuplicates();
+                series.Calculate();
             }
         }
     }

@@ -110,21 +110,13 @@ namespace eventphone.grafanalogo.Controllers
         [HttpPost("metrics/find")]
         public IEnumerable<TreeJsonEntry> Find(string query)
         {
-            return Search(new SearchRequest { Target = query })
-                .Select(x => new TreeJsonEntry { IsLeaf = true, Name = x.Name, Path = x.Key });
-        }
-        
-        [HttpPost]
-        public IEnumerable<Variable> Search([FromBody]SearchRequest request)
-        {
-            var target = request?.Target ?? String.Empty;
             var dir = new DirectoryInfo(_root);
-            foreach (var file in dir.EnumerateFiles(target + "*"))
+            foreach (var file in dir.EnumerateFiles(query + "*"))
             {
                 var name = Path.GetFileNameWithoutExtension(file.Name);
-                yield return new Variable(name, name);
+                yield return new TreeJsonEntry{IsLeaf = true, Name = name, Path = name};
                 name += "-scroll";
-                yield return new Variable(name, name);
+                yield return new TreeJsonEntry{IsLeaf = true, Name = name, Path = name};
             }
         }
 
@@ -132,30 +124,14 @@ namespace eventphone.grafanalogo.Controllers
         [HttpPost("render")]
         public IEnumerable<QueryResponse> Render(string[] target, string from, string until)
         {
-            var fromdate = DateParser.Parse(from);
-            var todate = DateParser.Parse(until);
-            return Query(new QueryRequest
-            {
-                Targets = target.Select(x => new QueryTarget { Target = x, Type = "timeserie" }).ToArray(),
-                Range = new QueryRange { From = fromdate, To = todate }
-            }).Select(x => new QueryResponse
-            {
-                Target = x.Target,
-                Datapoints = x.Datapoints.Select(d => (d.Item1, d.Item2 / 1000))
-            });
-        }
-
-        [HttpPost]
-        public IEnumerable<QueryResponse> Query([FromBody] QueryRequest request)
-        {
-            var start = request.Range.From.ToUnixTimeMilliseconds();
-            var until = request.Range.To.ToUnixTimeMilliseconds();
-            var range = until - start;
+            var start = DateParser.Parse(from).ToUnixTimeSeconds();
+            var end = DateParser.Parse(until).ToUnixTimeSeconds();
+            var range = end - start;
             var root = new DirectoryInfo(_root);
-            foreach (var target in request.Targets.Where(x => x.Type == "timeserie"))
+            foreach (var entry in target)
             {
                 var scroll = false;
-                var name = target.Target;
+                var name = entry;
                 if (name != null && name.EndsWith("-scroll"))
                 {
                     name = name.Substring(0, name.Length - 7);

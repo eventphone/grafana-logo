@@ -1,5 +1,9 @@
 name: dotnet publish workflow
-on: [workflow_dispatch, push]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 jobs:
   publish:
     runs-on: ubuntu-latest

@@ -17,7 +17,7 @@ namespace eventphone.grafanalogo.Controllers
         private static ConcurrentDictionary<string, Logo> _logos = new ConcurrentDictionary<string, Logo>();
         private readonly string _root;
 
-        public HomeController(IHostingEnvironment hostingEnvironment)
+        public HomeController(IWebHostEnvironment hostingEnvironment)
         {
             _root = Path.Combine(hostingEnvironment.WebRootPath, "images");
         }

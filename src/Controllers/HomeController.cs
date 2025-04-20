@@ -124,6 +124,8 @@ namespace eventphone.grafanalogo.Controllers
         [HttpPost("render")]
         public IEnumerable<QueryResponse> Render(string[] target, string from, string until)
         {
+            if (String.IsNullOrEmpty(from)) yield break;
+            if (String.IsNullOrEmpty(until)) yield break;
             var start = DateParser.Parse(from).ToUnixTimeSeconds();
             var end = DateParser.Parse(until).ToUnixTimeSeconds();
             var range = end - start;
@@ -132,6 +134,12 @@ namespace eventphone.grafanalogo.Controllers
             {
                 var scroll = false;
                 var name = entry;
+                if (entry.StartsWith("aliasSub(")){
+                    //https://github.com/grafana/grafana/blob/f85e012e42fde1c173370b4c4ae43f8976557a90/pkg/tsdb/graphite/graphite.go#L230-L238
+                    name = entry.Substring(9);
+                    var index = name.IndexOf(',');
+                    name = name.Substring(0, index);
+                }
                 if (name != null && name.EndsWith("-scroll"))
                 {
                     name = name.Substring(0, name.Length - 7);
